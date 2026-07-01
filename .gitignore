@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Node / JS
+node_modules/
+dist/
+.eslintcache
+.stylelintcache
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS temp files
+.DS_Store
+Thumbs.db
+
+# Database / temporary files
+*.sqlite3
+ocr_test_sample.png
+result.json

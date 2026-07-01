@@ -1,0 +1,25 @@
+<svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Book Shape with bright purple stroke, transparent fill -->
+  <path
+    d="M12 21C12 21 8.5 18 3 18V5C8.5 5 12 8 12 8C12 8 15.5 5 21 5V18C15.5 18 12 21 12 21Z"
+    stroke="#a78bfa"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    fill="none"
+  />
+
+  <!-- Book Center spine -->
+  <path
+    d="M12 8V21"
+    stroke="#a78bfa"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+  />
+
+  <!-- Glowing electric spark in center in bright cyan -->
+  <path
+    d="M12 4.5L14 9.5H12.5L13.5 14.5L9.5 9.5H11.5L12 4.5Z"
+    fill="#22d3ee"
+  />
+</svg>

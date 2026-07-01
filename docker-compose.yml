@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: ncert_alive_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: always
+
+  backend:
+    build: ./backend
+    container_name: ncert_alive_backend
+    ports:
+      - "8082:8082"
+    environment:
+      - MONODB_URI=mongodb://mongodb:27017
+      - SECRET_KEY=ncert_alive_production_secret_key_change_me
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    depends_on:
+      - mongodb
+    restart: always
+
+  frontend:
+    build: ./frontend
+    container_name: ncert_alive_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  mongo_data:

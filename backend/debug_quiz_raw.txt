@@ -1,0 +1,31 @@
+I don't see any NCERT content provided. Please provide the content, and I'll generate a high-quality CBSE conceptual quiz for Class 10 students.
+
+Once you provide the content, I'll create a JSON object with the following structure:
+
+
+{
+  "mcq": [
+    {
+      "question": "...",
+      "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
+      "answer": "A) ...",
+      "explanation": "..."
+    }
+  ],
+  "fill_blanks": [
+    {
+      "question": "The ___ is responsible for ...",
+      "answer": "...",
+      "explanation": "..."
+    }
+  ],
+  "one_liners": [
+    {
+      "question": "...",
+      "answer": "..."
+    }
+  ]
+}
+
+
+Please provide the NCERT content for Class 10. I'll generate the quiz accordingly.
