@@ -177,8 +177,23 @@
     left: 0;
     border-left-color: var(--border);
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+}
+
+/* Responsive Landing Navigation */
+.landing-nav {
+  padding: 0 44px;
+}
+
+@media (max-width: 768px) {
+  .landing-nav {
+    padding: 0 16px;
+  }
+  .landing-nav-links {
+    display: none !important; /* Hide central links on mobile to prevent overlapping */
+  }
+  .landing-nav-right button {
+    padding: 8px 14px !important; /* Make sign-in button smaller on mobile */
+    font-size: 12px !important;
   }
 }
+

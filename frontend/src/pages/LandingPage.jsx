@@ -46,19 +46,20 @@ function ParticleOrb({ scrollProgress }) {
     const draw = () => {
       const W = canvas.width, H = canvas.height
       ctx.clearRect(0, 0, W, H)
-      tick++
+      // Normalize time step to simulate 60fps clock independently of actual screen refresh rate (60Hz vs 120Hz/144Hz+)
+      const tVal = performance.now() * 0.06
       const sc = Math.min(scrollRef.current, 1)
       const RADIUS = getRadius()
       const targetRotY = mouseRef.current.x * 0.45 * (1 - sc)
       const targetRotX = -mouseRef.current.y * 0.32 * (1 - sc)
       rotY += (targetRotY - rotY) * 0.025
       rotX += (targetRotX - rotX) * 0.025
-      const totalRotY = rotY + tick * 0.003
+      const totalRotY = rotY + tVal * 0.003
       const totalRotX = rotX
       const CX = W / 2, CY = H / 2
       const scatter = sc * (W * 1.8)
       const projected = particles.map(p => {
-        const pulse = 1 + 0.04 * Math.sin(tick * p.speed * 60 + p.phase)
+        const pulse = 1 + 0.04 * Math.sin(tVal * p.speed * 60 + p.phase)
         const cosY = Math.cos(totalRotY), sinY = Math.sin(totalRotY)
         const x1 = p.ox * cosY - p.oz * sinY
         const z1 = p.ox * sinY + p.oz * cosY
@@ -330,18 +331,18 @@ export default function LandingPage() {
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', backgroundImage: `radial-gradient(rgba(99,102,241,0.055) 1px, transparent 1px)`, backgroundSize: '42px 42px' }} />
 
       {/* ── NAVBAR ── */}
-      <motion.nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 44px', backdropFilter: 'blur(24px)', borderBottom: '1px solid', borderBottomColor: navBorder, background: navBg }}>
+      <motion.nav className="landing-nav" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', backdropFilter: 'blur(24px)', borderBottom: '1px solid', borderBottomColor: navBorder, background: navBg }}>
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
           <Logo size="sm" />
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} style={{ display: 'flex', gap: 36, fontSize: 13, fontWeight: 500 }}>
+        <motion.div className="landing-nav-links" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} style={{ display: 'flex', gap: 36, fontSize: 13, fontWeight: 500 }}>
           {[{ label: t(language, 'nav_features'), href: '#features' }, { label: t(language, 'nav_forschools'), href: '#forschools' }, { label: t(language, 'nav_demo'), href: '#demo' }].map(item => (
             <motion.a key={item.href} href={item.href} whileHover={{ color: '#fff', y: -1 }} style={{ color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}>
               {item.label}
             </motion.a>
           ))}
         </motion.div>
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.15 }} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <motion.div className="landing-nav-right" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.15 }} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <LanguageDropdown compact />
           <motion.button whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(99,102,241,0.5)' }} whileTap={{ scale: 0.96 }} onClick={() => navigate('/login')}
             style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', border: 'none', color: '#fff', fontWeight: 700, fontSize: 13, padding: '9px 20px', borderRadius: 100, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>
