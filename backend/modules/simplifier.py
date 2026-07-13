@@ -162,20 +162,7 @@ Text to analyze:
         detected = int(result.get('class_level', 10))
         detected = max(6, min(12, detected))
         
-        # Self-healing override: If detected class doesn't match student class, and there's no explicit mention of the detected class in the text, trust the student's class!
-        if user_class and detected != user_class:
-            roman_map = {6: 'VI', 7: 'VII', 8: 'VIII', 9: 'IX', 10: 'X', 11: 'XI', 12: 'XII'}
-            roman_val = roman_map.get(detected, "")
-            explicit_keywords = [
-                f"class {detected}", f"class-{detected}", f"class_{detected}",
-                f"class {roman_val}", f"कक्षा {detected}", f"कक्षा-{detected}",
-                f"grade {detected}", f"grade-{detected}"
-            ]
-            text_lower = text.lower()
-            has_explicit = any(kw in text_lower for kw in explicit_keywords)
-            if not has_explicit:
-                detected = user_class
-                
+        # Trust the AI's syllabus-matching capability for class level detection
         result['class_level'] = detected
         return result
     except Exception as e:
