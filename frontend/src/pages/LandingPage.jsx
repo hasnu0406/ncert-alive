@@ -26,7 +26,7 @@ function ParticleOrb({ scrollY }) {
     const ctx = canvas.getContext('2d')
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
     resize()
-    const NUM = 1200
+    const NUM = window.innerWidth < 768 ? 250 : 700
     const getRadius = () => Math.min(window.innerWidth, window.innerHeight) * 0.44
     const buildParticles = () => {
       const RADIUS = getRadius()
@@ -523,7 +523,6 @@ export default function LandingPage() {
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
-        html { scroll-behavior: smooth; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         ::-webkit-scrollbar { width: 14px; }
         ::-webkit-scrollbar-track { background: #000005; }
