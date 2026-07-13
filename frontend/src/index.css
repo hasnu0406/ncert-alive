@@ -377,11 +377,27 @@ h1, h2, h3, h4, h5, h6 {
   display: none;
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  background: var(--bg-dark-2);
-  border-top: 1px solid var(--border-dark);
-  padding: 8px 0;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 100;
   backdrop-filter: blur(20px);
 }
+
+/* Responsive Landing Navigation */
+.landing-nav {
+  padding: 0 44px;
+}
+
+@media (max-width: 768px) {
+  .landing-nav {
+    padding: 0 12px !important;
+  }
+  .landing-nav-links {
+    display: none !important; /* Hide central links on mobile to prevent overlapping */
+  }
+  .landing-nav-right {
+    gap: 6px !important;
+  }
+  .landing-nav-right button {
+    padding: 7px 12px !important; /* Make sign-in button smaller on mobile */
+    font-size: 11px !important;
+  }
+}
+

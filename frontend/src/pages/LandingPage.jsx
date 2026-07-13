@@ -450,7 +450,7 @@ export default function LandingPage() {
             <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.32)', maxWidth: 400, margin: '0 auto' }}>{t(language, 'roles_sub')}</p>
           </div>
         </ScrollReveal>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 28, maxWidth: 780, margin: '0 auto' }}>
+        <div className="landing-roles-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 28, maxWidth: 780, margin: '0 auto' }}>
           {roleCards.map((p, i) => (
             <ScrollReveal key={i} delay={i * 0.18} direction={i === 0 ? 'left' : 'right'} distance={60}>
               <TiltCard style={{ height: '100%' }}>
@@ -541,6 +541,12 @@ export default function LandingPage() {
         @media (max-width: 768px) {
           h1 { letter-spacing: -0.5px !important; white-space: normal !important; font-size: clamp(24px, 7vw, 40px) !important; word-break: break-word !important; }
           section { padding-left: 24px !important; padding-right: 24px !important; }
+          .landing-nav { padding: 0 16px !important; }
+          .landing-nav-links { display: none !important; }
+          .landing-nav-right { gap: 6px !important; }
+          .landing-nav-right button { padding: 8px 14px !important; font-size: 11px !important; }
+          .landing-roles-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+          footer { padding: 24px 20px !important; justify-content: center !important; text-align: center !important; flex-direction: column !important; gap: 16px !important; }
         }
         @media (max-width: 480px) {
           h1 { font-size: clamp(22px, 7.5vw, 32px) !important; }
