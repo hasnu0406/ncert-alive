@@ -183,7 +183,7 @@ export default function Login() {
   }
 
   return (
-    <div style={{
+    <div className="login-container" style={{
       minHeight: '100vh', background: '#09081A', display: 'flex',
       fontFamily: "'Plus Jakarta Sans',sans-serif", color: '#f0eeff', overflow: 'hidden',
       position: 'relative',
@@ -197,7 +197,7 @@ export default function Login() {
       </div>
 
       {/* ── LEFT PANEL — visual/brand ── */}
-      <div style={{
+      <div className="login-left" style={{
         flex: '0 0 46%', position: 'relative', display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center', padding: '60px 48px',
         borderRight: '1px solid rgba(255,255,255,0.05)', zIndex: 1,
@@ -237,7 +237,7 @@ export default function Login() {
       </div>
 
       {/* ── RIGHT PANEL — form ── */}
-      <div style={{
+      <div className="login-right" style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '60px 48px', position: 'relative', zIndex: 1,
       }}>
@@ -427,11 +427,24 @@ export default function Login() {
         </div>
       </div>
 
-      <style>{`
+       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus Jakarta Sans:wght@400;500;600&display=swap');
         * { box-sizing: border-box; }
         input::placeholder { color: rgba(255,255,255,0.2); }
         input:-webkit-autofill { -webkit-box-shadow: 0 0 0 100px #09081A inset !important; -webkit-text-fill-color: #f0eeff !important; }
+        @media (max-width: 868px) {
+          .login-container {
+            flex-direction: column !important;
+            overflow-y: auto !important;
+          }
+          .login-left {
+            display: none !important;
+          }
+          .login-right {
+            padding: 48px 24px !important;
+            align-items: center !important;
+          }
+        }
       `}</style>
     </div>
   )
