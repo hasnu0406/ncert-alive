@@ -8,13 +8,17 @@ import Logo from '../components/Logo'
 import { ArrowRight, Sparkles, BookOpen, MessageSquare, Award, TrendingUp } from 'lucide-react'
 import { register, login } from '../lib/api'
 
-function ParticleOrb({ scrollProgress }) {
+function ParticleOrb({ scrollY }) {
   const canvasRef = useRef(null)
   const mouseRef = useRef({ x: 0, y: 0 })
   const scrollRef = useRef(0)
   const animRef = useRef(null)
 
-  useEffect(() => { scrollRef.current = scrollProgress }, [scrollProgress])
+  useEffect(() => {
+    return scrollY.on('change', v => {
+      scrollRef.current = Math.min(v / (window.innerHeight * 0.45), 1)
+    })
+  }, [scrollY])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -158,18 +162,17 @@ function FloatingEduIcons() {
   )
 }
 
-function AmbientNumbers({ scrollProgress }) {
-  const sc = Math.min(scrollProgress, 1)
+function AmbientNumbers({ opacity }) {
   const nums = [{ v: '23', x: '14%', y: '22%', d: 0 }, { v: '36', x: '78%', y: '15%', d: 0.4 }, { v: '84', x: '8%', y: '55%', d: 0.8 }, { v: '52', x: '72%', y: '72%', d: 1.2 }, { v: '76', x: '30%', y: '85%', d: 1.6 }, { v: '91', x: '88%', y: '44%', d: 0.6 }]
   return (
-    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, opacity: 1 - sc * 2 }}>
+    <motion.div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, opacity }}>
       {nums.map((n, i) => (
         <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: [0, 0.2, 0.12, 0.2] }} transition={{ duration: 4, delay: n.d, repeat: Infinity }}
           style={{ position: 'absolute', left: n.x, top: n.y, fontSize: 11, fontWeight: 500, color: 'rgba(165,180,252,0.4)', fontFamily: "'Plus Jakarta Sans',sans-serif", letterSpacing: '0.06em' }}>
           {n.v}
         </motion.div>
       ))}
-    </div>
+    </motion.div>
   )
 }
 
@@ -285,21 +288,9 @@ export default function LandingPage() {
 
   const [demoLoading, setDemoLoading] = useState(null)
   const { scrollY } = useScroll()
-  const [scrollProgress, setScrollProgress] = useState(0)
-  useEffect(() => {
-    let ticking = false
-    return scrollY.on('change', v => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          setScrollProgress(Math.min(v / (window.innerHeight * 0.45), 1))
-          ticking = false
-        })
-        ticking = true
-      }
-    })
-  }, [scrollY])
   const navBg = useTransform(scrollY, [0, 80], ['rgba(0,0,0,0)', 'rgba(9,8,26,0.97)'])
   const navBorder = useTransform(scrollY, [0, 80], ['rgba(255,255,255,0)', 'rgba(255,255,255,0.06)'])
+  const ambientOpacity = useTransform(scrollY, [0, 200], [1, 0])
 
   const handleDemo = async (role) => {
     setDemoLoading(role)
@@ -324,9 +315,9 @@ export default function LandingPage() {
   return (
     <div style={{ background: '#000005', minHeight: '100vh', color: '#f0eeff', fontFamily: "'Plus Jakarta Sans',sans-serif", overflowX: 'hidden' }}>
 
-      <ParticleOrb scrollProgress={scrollProgress} />
+      <ParticleOrb scrollY={scrollY} />
       <FloatingEduIcons />
-      <AmbientNumbers scrollProgress={scrollProgress} />
+      <AmbientNumbers opacity={ambientOpacity} />
       <ScanLine />
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', backgroundImage: `radial-gradient(rgba(99,102,241,0.055) 1px, transparent 1px)`, backgroundSize: '42px 42px' }} />
 
