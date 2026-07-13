@@ -30,16 +30,17 @@
   padding: 0;
 }
 
-html {
+html, body {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
   background-color: var(--bg-dark);
 }
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--bg-dark);
   color: var(--text-primary);
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
