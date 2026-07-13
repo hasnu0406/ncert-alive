@@ -1,10 +1,17 @@
 import hashlib
 import io
 import os
+import sys
 import asyncio
 import uuid
 from datetime import datetime, timedelta
 from typing import Optional
+
+# Add the backend directory to Python sys.path so Vercel can resolve relative module imports
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
 
 # pyrefly: ignore [missing-import]
 from bson import ObjectId
