@@ -150,6 +150,16 @@ export const uploadPDF = async (file, language = 'en', classLevel = 10, subject 
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     body: form,
   });
+  if (!res.ok) {
+    if (res.status === 413) {
+      throw new Error('PDF file size exceeds Vercel limit (4.5MB). Please copy-paste the text or upload a smaller PDF chapter.');
+    }
+    const text = await res.text().catch(() => '');
+    if (text.includes('Request Entity Too Large') || text.includes('Request En')) {
+      throw new Error('PDF file size exceeds Vercel limit (4.5MB). Please copy-paste the text or upload a smaller PDF chapter.');
+    }
+    throw new Error('Failed to upload PDF. Please make sure the file is valid.');
+  }
   return res.json();
 };
 export const uploadImage = async (file) => {
@@ -161,6 +171,16 @@ export const uploadImage = async (file) => {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     body: form,
   });
+  if (!res.ok) {
+    if (res.status === 413) {
+      throw new Error('Image file size exceeds Vercel limit (4.5MB). Please copy-paste the text or upload a smaller image.');
+    }
+    const text = await res.text().catch(() => '');
+    if (text.includes('Request Entity Too Large') || text.includes('Request En')) {
+      throw new Error('Image file size exceeds Vercel limit (4.5MB). Please copy-paste the text or upload a smaller image.');
+    }
+    throw new Error('Failed to upload image. Please make sure the file is valid.');
+  }
   return res.json();
 };
 

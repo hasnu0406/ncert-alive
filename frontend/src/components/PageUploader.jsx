@@ -74,6 +74,10 @@ export default function PageUploader({ onTextExtracted, triggerAction, onTrigger
   }
 
   const handlePDFFile = async (file) => {
+    if (file.size > 4.2 * 1024 * 1024) {
+      setError('PDF file is too large (Vercel limit is 4.5MB). Please split your PDF, upload fewer pages, or copy-paste the text directly using the "Paste Text" tab!');
+      return;
+    }
     setLoading(true); setError(''); setPdfFile(file)
     const stopProgress = simulateProgress()
     try {
