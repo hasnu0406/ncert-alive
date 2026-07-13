@@ -749,7 +749,7 @@ class QuizRequest(BaseModel):
     doc_id: Optional[str] = None
 
 @quiz_router.post("/generate")
-async def generate(req: QuizRequest):
+async def generate(req: QuizRequest, current_user=Depends(get_current_user)):
     if req.doc_id and not req.page_id:
         cached = await get_cached(req.doc_id)
         if cached and cached.get("quiz") and isinstance(cached["quiz"], dict) and cached["quiz"].get(req.language) and cached["quiz"][req.language].get("mcq"):
@@ -778,6 +778,13 @@ async def generate(req: QuizRequest):
                          cached.get("flashcards", {}),
                          cached.get("subject", "default"), cached.get("classLevel", req.class_level),
                          cached.get("detectedClassLevel"))
+    else:
+        # Create a new cache entry for non-PDF content (photos, webcam, pasted text)
+        await save_cache(page_id, req.text,
+                         {}, {req.language: quiz},
+                         [],
+                         "default", req.class_level,
+                         None, None, str(current_user["_id"]))
 
     return {"quiz": quiz, "from_cache": False, "page_id": page_id}
 
@@ -807,7 +814,7 @@ class FlashcardRequest(BaseModel):
     doc_id: Optional[str] = None
 
 @flashcard_router.post("/generate")
-async def generate_fc(req: FlashcardRequest):
+async def generate_fc(req: FlashcardRequest, current_user=Depends(get_current_user)):
     if req.doc_id and not req.page_id:
         cached = await get_cached(req.doc_id)
         if cached and cached.get("flashcards") and isinstance(cached["flashcards"], dict) and cached["flashcards"].get(req.language):
@@ -835,6 +842,13 @@ async def generate_fc(req: FlashcardRequest):
                          cards_map,
                          cached.get("subject", "default"), cached.get("classLevel", req.class_level),
                          cached.get("detectedClassLevel"))
+    else:
+        # Create a new cache entry for non-PDF content (photos, webcam, pasted text)
+        await save_cache(page_id, req.text,
+                         {}, {},
+                         {req.language: cards},
+                         "default", req.class_level,
+                         None, None, str(current_user["_id"]))
 
     return {"flashcards": cards, "from_cache": False, "page_id": page_id}
 
