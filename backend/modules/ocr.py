@@ -2,7 +2,7 @@ import io
 import base64
 from pathlib import Path
 from PIL import Image
-from .ai_engine import _client
+from .ai_engine import _client, PRIMARY_MODEL
 
 def compress_image(image_bytes: bytes, max_dim: int = 1024, quality: int = 80) -> bytes:
     """Resize image to max dimensions of 1024px and compress to JPEG under 150KB."""
@@ -41,7 +41,7 @@ def extract_text_from_image(image_bytes: bytes) -> str:
         
         # Call Groq Vision API
         response = _client.chat.completions.create(
-            model="llama-3.2-11b-vision-preview",
+            model=PRIMARY_MODEL,
             messages=[
                 {
                     "role": "user",
