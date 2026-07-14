@@ -68,9 +68,12 @@ def extract_text_from_image(image_bytes: bytes) -> str:
             max_tokens=4000
         )
         text = response.choices[0].message.content.strip()
+        print(f"[ocr success] Extracted text length: {len(text)}. Content preview: {text[:150]}")
         if text:
             return text
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"[ocr API error] Failed to call Vision API: {e}. Falling back to local OCR...")
 
     # Fallback to local OCR engines
