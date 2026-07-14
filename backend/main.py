@@ -997,48 +997,6 @@ async def upload_image_b64(payload: dict):
     text = extract_text_from_base64(b64)
     return {"text": text}
 
-@upload_router.get("/debug-models")
-async def debug_models():
-    from modules.ai_engine import _client
-    try:
-        models = await asyncio.to_thread(_client.models.list)
-        return {"models": [m.id for m in models.data]}
-    except Exception as e:
-        return {"error": str(e)}
-
-@upload_router.get("/test-vision")
-async def test_vision():
-    from modules.ai_engine import _client
-    dummy_img = (
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
-    )
-    results = {}
-    for model in ["meta-llama/llama-4-scout-17b-16e-instruct", "qwen/qwen3.6-27b"]:
-        try:
-            response = await asyncio.to_thread(
-                _client.chat.completions.create,
-                model=model,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": "Describe this image in one word."},
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/png;base64,{dummy_img}"
-                                }
-                            }
-                        ]
-                    }
-                ],
-                temperature=0.0,
-                max_tokens=100
-            )
-            results[model] = {"status": "success", "response": response.choices[0].message.content.strip()}
-        except Exception as e:
-            results[model] = {"status": "error", "error": str(e)}
-    return results
 
 # ─── Progress Router ────────────────────────────────────────────
 
