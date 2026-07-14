@@ -985,6 +985,7 @@ async def upload_image(file: UploadFile = File(...)):
     from modules.ocr import extract_text_from_image, get_ocr_engine
     content = await file.read()
     text = extract_text_from_image(content)
+    print(f"[backend upload_image success] Extracted text length: {len(text)}. Content preview: {text[:150]}")
     if not text:
         raise HTTPException(status_code=422, detail="Could not extract text from image")
     return {"text": text, "ocr_engine": get_ocr_engine()}
