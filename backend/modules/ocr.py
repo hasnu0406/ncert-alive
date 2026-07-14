@@ -1,38 +1,63 @@
 import io
 import base64
 from pathlib import Path
+from .ai_engine import _client
 
-try:
-    import easyocr
-    _reader = None
+def extract_text_from_image(image_bytes: bytes) -> str:
+    """Extract text from image using Groq/OpenRouter Vision API with local fallback."""
+    try:
+        # Encode image to base64 data URL
+        b64_data = base64.b64encode(image_bytes).decode('utf-8')
+        data_url = f"data:image/jpeg;base64,{b64_data}"
+        
+        # Call Groq Vision API
+        response = _client.chat.completions.create(
+            model="llama-3.2-11b-vision-preview",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": (
+                                "You are a precise OCR tool. Transcribe all text from this CBSE/NCERT textbook page. "
+                                "Output ONLY the transcribed text. Maintain paragraphs and lists. "
+                                "Do NOT add any greetings, headers, explanations, markdown formatting, or notes. "
+                                "Just output the text content of the page."
+                            )
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": data_url
+                            }
+                        }
+                    ]
+                }
+            ],
+            temperature=0.0,
+            max_tokens=4000
+        )
+        text = response.choices[0].message.content.strip()
+        if text:
+            return text
+    except Exception as e:
+        print(f"[ocr API error] Failed to call Vision API: {e}. Falling back to local OCR...")
 
-    def _get_reader():
-        global _reader
-        if _reader is None:
-            print("[ocr] Loading EasyOCR model (first run may take a moment)...")
-            _reader = easyocr.Reader(["en", "hi"], gpu=False)
-        return _reader
-
-    def extract_text_from_image(image_bytes: bytes) -> str:
-        reader = _get_reader()
+    # Fallback to local OCR engines
+    try:
+        import easyocr
+        reader = easyocr.Reader(["en", "hi"], gpu=False)
         results = reader.readtext(image_bytes, detail=0, paragraph=True)
         return "\n".join(results).strip()
-
-    OCR_ENGINE = "easyocr"
-
-except ImportError:
-    print("[ocr] EasyOCR not available, falling back to Tesseract")
-    OCR_ENGINE = "tesseract"
-
-    def extract_text_from_image(image_bytes: bytes) -> str:
+    except ImportError:
         try:
             import pytesseract
             from PIL import Image
             img = Image.open(io.BytesIO(image_bytes))
             return pytesseract.image_to_string(img).strip()
         except ImportError:
-            return "[OCR not available — please install EasyOCR or Tesseract]"
-
+            return "[OCR not available — please set a valid Groq API Key for Cloud Vision OCR]"
 
 def extract_text_from_base64(b64_string: str) -> str:
     """Accept base64-encoded image from frontend."""
@@ -42,6 +67,5 @@ def extract_text_from_base64(b64_string: str) -> str:
     image_bytes = base64.b64decode(b64_string)
     return extract_text_from_image(image_bytes)
 
-
 def get_ocr_engine() -> str:
-    return OCR_ENGINE
+    return "cloud-vision-llama"
