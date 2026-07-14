@@ -247,7 +247,15 @@ function TypewriterText({ text, speed = 10, language, isStreaming = false }) {
 export default function ExplanationCard({ explanation, detected = {}, onAudio, onRegenerate, isLoading, language, isStreaming = false, studentClass = 10 }) {
   const [eli10, setEli10] = useState(false)
   const [expanded, setExpanded] = useState(true)
-  const subject = detected?.subject || 'default'
+  const rawSubj = (detected?.subject || 'default').trim().toLowerCase()
+  let subject = 'default'
+  if (['science', 'physics', 'chemistry', 'biology'].includes(rawSubj)) subject = 'science'
+  else if (['math', 'mathematics'].includes(rawSubj)) subject = 'math'
+  else if (['history', 'civics', 'political science', 'politics', 'social science', 'social studies'].includes(rawSubj)) subject = 'history'
+  else if (['geography', 'earth science', 'disaster management'].includes(rawSubj)) subject = 'geography'
+  else if (['economics', 'economy'].includes(rawSubj)) subject = 'economics'
+  else if (['english', 'literature', 'english literature'].includes(rawSubj)) subject = 'english'
+
   const colors = SUBJECT_COLORS[subject] || SUBJECT_COLORS.default
 
   if (isLoading) {
@@ -296,7 +304,7 @@ export default function ExplanationCard({ explanation, detected = {}, onAudio, o
         {/* Badges */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <span className="badge" style={{ background: colors.bg, color: colors.text, border: `1px solid ${colors.border}`, padding: '6px 14px', fontSize: 13 }}>
-            {colors.label.split(' ')[0]} {t(language, `subj_${detected?.subject?.toLowerCase() || 'general'}`) || colors.label.split(' ')[1]}
+            {colors.label.split(' ')[0]} {t(language, `subj_${subject}`) || colors.label.split(' ')[1]}
           </span>
           {detected?.class_level && (
             <span className="badge badge-purple" style={{ padding: '6px 14px', fontSize: 13 }}>

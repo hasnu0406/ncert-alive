@@ -162,6 +162,23 @@ Text to analyze:
         detected = int(result.get('class_level', 10))
         detected = max(6, min(12, detected))
         
+        # Normalize subject string to match one of the 7 supported frontend categories
+        subj = result.get('subject', 'default').strip().lower()
+        if subj in ['science', 'physics', 'chemistry', 'biology']:
+            result['subject'] = 'science'
+        elif subj in ['math', 'mathematics']:
+            result['subject'] = 'math'
+        elif subj in ['history', 'civics', 'political science', 'politics', 'social science', 'social studies']:
+            result['subject'] = 'history'
+        elif subj in ['geography', 'earth science', 'disaster management']:
+            result['subject'] = 'geography'
+        elif subj in ['economics', 'economy']:
+            result['subject'] = 'economics'
+        elif subj in ['english', 'literature', 'english literature']:
+            result['subject'] = 'english'
+        else:
+            result['subject'] = 'default'
+
         # Trust the AI's syllabus-matching capability for class level detection
         result['class_level'] = detected
         return result
