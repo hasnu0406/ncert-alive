@@ -41,7 +41,7 @@ def extract_text_from_image(image_bytes: bytes) -> str:
         
         # Call Groq Vision API
         response = _client.chat.completions.create(
-            model=PRIMARY_MODEL,
+            model="llama-3.2-11b-vision-instruct",
             messages=[
                 {
                     "role": "user",
