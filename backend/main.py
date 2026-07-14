@@ -997,6 +997,15 @@ async def upload_image_b64(payload: dict):
     text = extract_text_from_base64(b64)
     return {"text": text}
 
+@upload_router.get("/debug-models")
+async def debug_models():
+    from modules.ai_engine import _client
+    try:
+        models = await asyncio.to_thread(_client.models.list)
+        return {"models": [m.id for m in models.data]}
+    except Exception as e:
+        return {"error": str(e)}
+
 # ─── Progress Router ────────────────────────────────────────────
 
 progress_router = APIRouter(prefix="/progress", tags=["Progress"])
