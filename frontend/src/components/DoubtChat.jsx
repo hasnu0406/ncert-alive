@@ -446,7 +446,7 @@ export default function DoubtChat({ context = '', language, onLanguageChange, pa
     }}>
 
       {/* ── CHATGPT-STYLE SIDEBAR ── */}
-      <div style={{
+      <div className="chat-sidebar" style={{
         width: 240,
         background: 'rgba(10, 8, 20, 0.45)',
         borderRight: '1px solid rgba(255, 255, 255, 0.05)',

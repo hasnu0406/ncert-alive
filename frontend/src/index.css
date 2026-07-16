@@ -376,12 +376,31 @@ h1, h2, h3, h4, h5, h6 {
     padding: 16px 16px calc(85px + env(safe-area-inset-bottom)) !important;
     min-height: 100dvh !important;
   }
-  .bottom-nav { display: flex !important; }
+  .bottom-nav {
+    display: flex !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .bottom-nav::-webkit-scrollbar {
+    display: none !important;
+  }
+  .bottom-nav button {
+    flex: 0 0 auto !important;
+  }
   .card-content-padding {
     padding: 24px 20px !important;
   }
+  .chat-sidebar {
+    display: none !important;
+  }
   .chat-container {
-    height: calc(100dvh - 140px - env(safe-area-inset-bottom)) !important;
+    height: calc(100dvh - 160px - env(safe-area-inset-bottom)) !important;
+    min-height: auto !important;
     border-radius: 16px !important;
   }
 }
