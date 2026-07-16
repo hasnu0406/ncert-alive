@@ -434,13 +434,13 @@ export default function DoubtChat({ context = '', language, onLanguageChange, pa
   }
 
   return (
-    <div style={{
+    <div className="chat-container" style={{
       background: 'rgba(12,10,24,0.72)',
       backdropFilter: 'blur(28px)',
       border: '1px solid rgba(255,255,255,0.07)',
       borderRadius: 24,
       display: 'flex',
-      height: 'calc(100vh - 180px)',
+      height: 'calc(100dvh - 180px)',
       minHeight: 480,
       overflow: 'hidden',
     }}>

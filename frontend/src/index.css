@@ -41,6 +41,7 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   color: var(--text-primary);
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -340,10 +341,12 @@ h1, h2, h3, h4, h5, h6 {
 .app-layout {
   display: flex;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 .sidebar {
-  width: 260px;
+  width: 240px;
   min-height: 100vh;
+  min-height: 100dvh;
   flex-shrink: 0;
   background: var(--bg-dark-2);
   border-right: 1px solid var(--border-dark);
@@ -357,9 +360,10 @@ h1, h2, h3, h4, h5, h6 {
   overflow-y: auto;
 }
 .main-content {
-  margin-left: 260px;
+  margin-left: 240px;
   flex: 1;
   min-height: 100vh;
+  min-height: 100dvh;
   padding: 24px;
 }
 .card-content-padding {
@@ -367,10 +371,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 @media (max-width: 768px) {
   .sidebar { display: none !important; }
-  .main-content { margin-left: 0; padding: 16px; padding-bottom: 80px; }
+  .main-content {
+    margin-left: 0 !important;
+    padding: 16px 16px calc(85px + env(safe-area-inset-bottom)) !important;
+    min-height: 100dvh !important;
+  }
   .bottom-nav { display: flex !important; }
   .card-content-padding {
     padding: 24px 20px !important;
+  }
+  .chat-container {
+    height: calc(100dvh - 140px - env(safe-area-inset-bottom)) !important;
+    border-radius: 16px !important;
   }
 }
 .bottom-nav {

@@ -313,7 +313,7 @@ export default function LandingPage() {
   ]
 
   return (
-    <div style={{ background: '#000005', minHeight: '100vh', color: '#f0eeff', fontFamily: "'Plus Jakarta Sans',sans-serif", overflowX: 'hidden' }}>
+    <div style={{ background: '#000005', minHeight: '100dvh', color: '#f0eeff', fontFamily: "'Plus Jakarta Sans',sans-serif", overflowX: 'hidden' }}>
 
       <ParticleOrb scrollY={scrollY} />
       <FloatingEduIcons />
@@ -343,7 +343,7 @@ export default function LandingPage() {
       </motion.nav>
 
       {/* ── HERO ── */}
-      <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 2, padding: '120px 48px 80px', textAlign: 'center' }}>
+      <section style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 2, padding: '120px 48px 80px', textAlign: 'center' }}>
 
         {/* Badge */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} style={{ marginBottom: 24 }}>

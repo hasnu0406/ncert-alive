@@ -158,7 +158,7 @@ export default function Navbar({ activeTab, onTabChange }) {
     <>
       {/* ── DESKTOP SIDEBAR ── */}
       <aside className="sidebar" style={{
-        width: 240, minHeight: '100vh', flexShrink: 0,
+        width: 240, minHeight: '100dvh', flexShrink: 0,
         background: 'rgba(10, 8, 20, 0.78)',
         borderRight: '1px solid rgba(255, 255, 255, 0.05)',
         padding: '24px 14px', display: 'flex', flexDirection: 'column', gap: 4,

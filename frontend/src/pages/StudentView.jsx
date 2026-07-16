@@ -675,12 +675,12 @@ export default function StudentView() {
   const showGradeBanner = detectedClass && parseInt(detectedClass) !== parseInt(userClass)
 
   return (
-    <div className="mesh-grid" style={{ display: 'flex', minHeight: '100vh', color: '#f8f7ff', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
+    <div className="mesh-grid" style={{ display: 'flex', minHeight: '100dvh', color: '#f8f7ff', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
       <BgOrbs />
       <FloatingEduIcons />
       <Navbar activeTab={tab} onTabChange={handleTabChange} />
 
-      <main style={{ marginLeft: 240, flex: 1, minHeight: '100vh', padding: '40px 48px 120px', position: 'relative', zIndex: 1 }}>
+      <main className="main-content" style={{ flex: 1, minHeight: '100dvh', padding: '40px 48px 120px', position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
 
           {/* ── Header ── */}

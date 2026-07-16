@@ -184,7 +184,7 @@ export default function Login() {
 
   return (
     <div className="login-container" style={{
-      minHeight: '100vh', background: '#09081A', display: 'flex',
+      minHeight: '100dvh', background: '#09081A', display: 'flex',
       fontFamily: "'Plus Jakarta Sans',sans-serif", color: '#f0eeff', overflow: 'hidden',
       position: 'relative',
     }}>

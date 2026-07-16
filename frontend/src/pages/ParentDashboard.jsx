@@ -401,11 +401,11 @@ export default function ParentDashboard() {
   const greetKey = hour < 12 ? 'good_morning' : hour < 17 ? 'good_afternoon' : 'good_evening'
 
   return (
-    <div className="mesh-grid" style={{ display: 'flex', minHeight: '100vh', color: '#f8f7ff', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
+    <div className="mesh-grid" style={{ display: 'flex', minHeight: '100dvh', color: '#f8f7ff', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
       <BgOrbs />
       <Navbar activeTab="dashboard" onTabChange={() => {}} />
 
-      <main style={{ marginLeft: 240, flex: 1, padding: '36px 40px 120px', position: 'relative', zIndex: 1 }}>
+      <main className="main-content" style={{ flex: 1, padding: '36px 40px 120px', position: 'relative', zIndex: 1 }}>
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: 36, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
