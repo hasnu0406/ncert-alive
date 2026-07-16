@@ -435,6 +435,7 @@ export default function DoubtChat({ context = '', language, onLanguageChange, pa
 
   return (
     <div className="chat-container" style={{
+      width: '100%',
       background: 'rgba(12,10,24,0.72)',
       backdropFilter: 'blur(28px)',
       border: '1px solid rgba(255,255,255,0.07)',
@@ -580,7 +581,7 @@ export default function DoubtChat({ context = '', language, onLanguageChange, pa
       </div>
 
       {/* ── MESSAGES ── */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '32px 32px' }}>
+      <div className="chat-messages" style={{ flex: 1, overflowY: 'auto', padding: '32px 32px' }}>
         <div style={{ maxWidth: '760px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 32 }}>
 
           {/* Empty state */}
@@ -760,7 +761,7 @@ export default function DoubtChat({ context = '', language, onLanguageChange, pa
       </div>
 
       {/* ── INPUT ── */}
-      <div style={{ padding: '16px 24px 20px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="chat-input-wrapper" style={{ padding: '16px 24px 20px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
           <div style={{
             display: 'flex', gap: 12, alignItems: 'flex-end',
