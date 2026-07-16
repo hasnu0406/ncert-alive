@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, MessageCircle, HelpCircle, Layers, Trophy, LogOut, Home, Users, ClipboardList, Zap, Library, Map } from 'lucide-react'
+import { BookOpen, MessageCircle, HelpCircle, Layers, Trophy, LogOut, Home, Users, ClipboardList, Zap, Library, Map, Globe } from 'lucide-react'
 import { useLanguage } from '../lib/LanguageContext'
-import { t } from '../lib/i18n'
+import { t, LANGUAGES } from '../lib/i18n'
 import LanguageDropdown from './LanguageDropdown'
+import LanguageModal from './LanguageModal'
 import Logo from './Logo'
 
 const LIB_TRANSLATIONS = {
@@ -30,7 +32,8 @@ const LIB_TRANSLATIONS = {
 
 export default function Navbar({ activeTab, onTabChange }) {
   const navigate = useNavigate()
-  const { language } = useLanguage()
+  const { language, changeLanguage } = useLanguage()
+  const [langOpen, setLangOpen] = useState(false)
   const user = JSON.parse(localStorage.getItem('ncert_user') || 'null')
 
   const NAV_TRANS = {
@@ -296,6 +299,17 @@ export default function Navbar({ activeTab, onTabChange }) {
             </button>
           )
         })}
+        <button onClick={() => setLangOpen(true)}
+          style={{ 
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, 
+            padding: '4px 12px', background: 'transparent', border: 'none', cursor: 'pointer', 
+            color: 'rgba(255,255,255,0.35)', 
+            fontSize: 10, fontWeight: 500,
+            transition: 'all 0.2s'
+          }}>
+          <Globe size={19} style={{ color: 'rgba(255,255,255,0.35)' }} />
+          <span>{LANGUAGES.find(l => l.code === language)?.label?.split(' ')[0] || 'Language'}</span>
+        </button>
         <button onClick={handleLogout}
           style={{ 
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, 
@@ -308,6 +322,7 @@ export default function Navbar({ activeTab, onTabChange }) {
           {t(language, 'nav_logout')}
         </button>
       </nav>
+      <LanguageModal isOpen={langOpen} onClose={() => setLangOpen(false)} value={language} onChange={changeLanguage} />
     </>
   )
 }
