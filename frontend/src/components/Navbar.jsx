@@ -296,6 +296,17 @@ export default function Navbar({ activeTab, onTabChange }) {
             </button>
           )
         })}
+        <button onClick={handleLogout}
+          style={{ 
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, 
+            padding: '4px 12px', background: 'transparent', border: 'none', cursor: 'pointer', 
+            color: 'rgba(239,68,68,0.75)', 
+            fontSize: 10, fontWeight: 500,
+            transition: 'all 0.2s'
+          }}>
+          <LogOut size={19} style={{ color: 'rgba(239,68,68,0.75)' }} />
+          {t(language, 'nav_logout')}
+        </button>
       </nav>
     </>
   )
