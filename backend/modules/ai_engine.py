@@ -13,7 +13,7 @@ _client = OpenAI(
     max_retries=1
 )
 
-PRIMARY_MODEL = "qwen/qwen3.6-27b"
+PRIMARY_MODEL = "llama-3.3-70b-versatile"
 FAST_MODEL = "llama-3.1-8b-instant"  # For quiz/flashcard JSON — 5x faster
 FALLBACK_MODEL = "llama-3.3-70b-versatile"
 
