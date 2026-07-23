@@ -236,7 +236,11 @@ const LOCAL_TRANSLATIONS = {
   }
 };
 
-export default function QuizCard({ quiz, pageId, userId, onPointsAwarded, isLoading, language = 'en' }) {
+export default function QuizCard({ quiz: rawQuiz, pageId, userId, onPointsAwarded, isLoading, language = 'en' }) {
+  const quiz = (rawQuiz && !rawQuiz.mcq && !rawQuiz.fill_blanks && typeof rawQuiz === 'object')
+    ? (rawQuiz[language] || rawQuiz['en'] || Object.values(rawQuiz)[0] || rawQuiz)
+    : rawQuiz
+
   const tl = (key) => LOCAL_TRANSLATIONS[language]?.[key] || LOCAL_TRANSLATIONS['en']?.[key] || key
   const [tab, setTab] = useState('mcq')
   const [answers, setAnswers] = useState({})

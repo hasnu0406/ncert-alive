@@ -600,7 +600,7 @@ export default function StudentView() {
 
   const handleTabChange = async (newTab) => {
     setTab(newTab)
-    if (newTab === 'quiz' && !quiz && !loadingQuiz && rawText) {
+    if (newTab === 'quiz' && (!quiz || quiz.error) && !loadingQuiz && rawText) {
       setLoadingQuiz(true)
       const fetchQuiz = async () => {
         try { 

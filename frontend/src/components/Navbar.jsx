@@ -141,7 +141,6 @@ export default function Navbar({ activeTab, onTabChange }) {
   const studentLinks = [
     { tab: 'upload',      label: t(language, 'nav_study'),   icon: BookOpen,      color: '#818cf8' },
     { tab: 'library',     label: LIB_TRANSLATIONS[language] || LIB_TRANSLATIONS['en'], icon: Library, color: '#a5b4fc' },
-    { tab: 'roadmap',     label: getNavLabel('roadmap', 'Syllabus Roadmap'), icon: Map, color: '#818cf8' },
     { tab: 'mockexam',    label: getNavLabel('mockexam', 'CBSE Mock Exam'), icon: ClipboardList, color: '#67e8f9' },
     { tab: 'chat',        label: t(language, 'nav_doubts'),  icon: MessageCircle, color: '#c4b5fd' },
     { tab: 'quiz',        label: t(language, 'nav_quiz'),    icon: HelpCircle,    color: '#67e8f9' },
