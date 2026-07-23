@@ -944,7 +944,7 @@ export default function StudentView() {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
                               <span style={{ textTransform: 'uppercase', background: 'rgba(99,102,241,0.15)', color: '#a5b4fc', padding: '2px 8px', borderRadius: 6, fontWeight: 600 }}>
-                                {item.subject}
+                                {/[\u0900-\u097F]/.test(item.topic || '') && (item.subject === 'english' || item.subject === 'default') ? 'hindi' : item.subject}
                               </span>
                               <span>·</span>
                               <span>{t(language, 'class_label')} {item.classLevel}</span>

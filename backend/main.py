@@ -604,10 +604,14 @@ async def get_simplified_history(current_user=Depends(get_current_user)):
             else:
                 topic_name = "Pasted Text"
 
+        subj = first_page["subject"]
+        if topic_name and re.search(r'[\u0900-\u097F]', topic_name) and subj in ("english", "default"):
+            subj = "hindi"
+
         docs.append({
             "pageId": first_page["pageId"],
             "docId": doc_id,
-            "subject": first_page["subject"],
+            "subject": subj,
             "classLevel": first_page["classLevel"],
             "topic": topic_name,
             "updatedAt": latest_updated if latest_updated != datetime.min else None,
@@ -645,15 +649,20 @@ async def get_cached_page(page_id: str):
         pages_list.sort(key=lambda x: x["page_num"])
         total_pages = len(pages_list)
 
+    subj = doc.get("subject", "default")
+    topic = doc.get("topic", "Unknown")
+    if topic and re.search(r'[\u0900-\u097F]', str(topic) + str(doc.get("originalText", ""))) and subj in ("english", "default"):
+        subj = "hindi"
+
     return {
         "pageId": doc["pageId"],
         "originalText": doc["originalText"],
         "simplifiedText": doc.get("simplifiedText", {}),
         "quiz": doc.get("quiz", {}),
         "flashcards": doc.get("flashcards", []),
-        "subject": doc.get("subject", "default"),
+        "subject": subj,
         "classLevel": doc.get("classLevel", 10),
-        "topic": doc.get("topic", "Unknown"),
+        "topic": topic,
         "totalPages": total_pages,
         "pages": pages_list
     }
