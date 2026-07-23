@@ -300,16 +300,29 @@ function EmptyState({ language, onAction }) {
 }
 
 /* ── Need content placeholder ── */
-function NeedContent({ emoji, title, desc }) {
+function NeedContent({ emoji, title, desc, onSampleQuiz, onOpenLibrary }) {
   const { language } = useLanguage()
   return (
     <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 340, gap: 16, textAlign: 'center', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 20, padding: 48 }}>
-      <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity }} style={{ fontSize: 52 }}>{emoji}</motion.div>
-      <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Outfit',sans-serif" }}>{title}</div>
-      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', maxWidth: 300, lineHeight: 1.65 }}>{desc}</div>
-      <div style={{ fontSize: 12, color: '#818cf8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
-        <ArrowRight size={12} /> {t(language, 'go_to_study_tab')}
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 360, gap: 18, textAlign: 'center', background: 'rgba(14,12,27,0.7)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 24, padding: 48 }}>
+      <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity }} style={{ fontSize: 56 }}>{emoji}</motion.div>
+      <div style={{ fontSize: 22, fontWeight: 800, fontFamily: "'Outfit',sans-serif", color: '#fff' }}>{title}</div>
+      <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', maxWidth: 380, lineHeight: 1.65 }}>{desc}</div>
+      <div style={{ display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+        {onSampleQuiz && (
+          <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+            onClick={onSampleQuiz}
+            style={{ padding: '12px 22px', borderRadius: 14, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', color: '#fff', fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif", display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 16px rgba(99,102,241,0.3)' }}>
+            <Sparkles size={16} /> Load Practice Quiz
+          </motion.button>
+        )}
+        {onOpenLibrary && (
+          <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+            onClick={onOpenLibrary}
+            style={{ padding: '12px 22px', borderRadius: 14, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#a5b4fc', fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif", display: 'flex', alignItems: 'center', gap: 8 }}>
+            <BookOpen size={16} /> Open NCERT Library
+          </motion.button>
+        )}
       </div>
     </motion.div>
   )
@@ -568,6 +581,23 @@ export default function StudentView() {
     setFlashcards([]); setDetected({}); setPageMeta({}); setApiKeyError(false)
   }
 
+  const handleSampleQuiz = () => {
+    const sampleText = "Photosynthesis is the process by which green plants and certain other organisms transform light energy into chemical energy. During photosynthesis in green plants, light energy is captured and used to convert water, carbon dioxide, and minerals into oxygen and energy-rich organic compounds. Leaves have tiny pores called stomata for gas exchange."
+    setRawText(sampleText)
+    setPageMeta({ pageId: 'sample-quiz-page', docId: 'sample-quiz-doc' })
+    setQuiz(null)
+    setLoadingQuiz(true)
+    generateQuiz(sampleText, userClass, language, 'sample-quiz-page', 'sample-quiz-doc')
+      .then(r => {
+        setQuiz(r.quiz || r)
+        setLoadingQuiz(false)
+      })
+      .catch(err => {
+        setQuiz({ error: err.message || 'Failed to generate quiz' })
+        setLoadingQuiz(false)
+      })
+  }
+
   const handleTabChange = async (newTab) => {
     setTab(newTab)
     if (newTab === 'quiz' && !quiz && !loadingQuiz && rawText) {
@@ -578,7 +608,7 @@ export default function StudentView() {
           if (r.status === 'processing') {
             setTimeout(fetchQuiz, 3000);
           } else {
-            setQuiz(r.quiz); 
+            setQuiz(r.quiz || r); 
             setLoadingQuiz(false);
           }
         } catch (err) { 
@@ -961,7 +991,7 @@ export default function StudentView() {
             {tab === 'quiz' && (
               <motion.div key="quiz" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                 {!rawText
-                  ? <NeedContent emoji="🎯" title={t(language, 'nav_quiz')} desc={`${t(language, 'upload_first')} ${t(language, 'to_generate_mcqs')}`} />
+                  ? <NeedContent emoji="🎯" title="NCERT AI Quiz Generator" desc="Upload a chapter PDF page or click below to generate an instant conceptual practice quiz!" onSampleQuiz={handleSampleQuiz} onOpenLibrary={() => setTab('library')} />
                   : <QuizCard quiz={quiz} pageId={pageMeta.pageId} userId={currentUser.id} onPointsAwarded={handlePointsAwarded} isLoading={loadingQuiz} language={language} />
                 }
               </motion.div>
