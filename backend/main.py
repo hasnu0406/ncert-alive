@@ -495,67 +495,62 @@ async def simplify_stream(req: SimplifyRequest, background_tasks: BackgroundTask
 
     text_box = [""]
     
-    def event_generator():
+    async def event_generator():
         stream = simplify_text_stream(req.text, req.language, class_level, subject, req.eli10)
         for chunk in stream:
             text_box[0] += chunk
             yield chunk
 
-    async def save_after_stream():
-        if not text_box[0]: return
-        
-        # Detect subject and topic if default
-        meta = {}
-        detected_class = None
-        if subject == "default":
+        if text_box[0]:
             try:
-                meta = detect_subject(req.text, class_level)
-            except Exception as e:
-                print(f"[detect] Subject detection failed in save_after_stream: {e}")
                 meta = {}
-            final_subject = meta.get("subject", "default")
-            detected_class = meta.get("class_level")
-            final_topic = meta.get("topic")
-        else:
-            final_subject = subject
-            final_topic = None
+                detected_class = None
+                if subject == "default":
+                    try:
+                        meta = detect_subject(req.text, class_level)
+                    except Exception as e:
+                        print(f"[detect] Subject detection failed in stream save: {e}")
+                        meta = {}
+                    final_subject = meta.get("subject", "default")
+                    detected_class = meta.get("class_level")
+                    final_topic = meta.get("topic")
+                else:
+                    final_subject = subject
+                    final_topic = None
 
-        existing = await get_cached(page_id)
-        if existing:
-            simplified_map = existing.get("simplifiedText", {})
-            simplified_map[req.language] = text_box[0]
-            
-            saved_topic = final_topic
-            if not saved_topic or saved_topic == "Unknown":
-                saved_topic = existing.get("topic")
-                
-            await save_cache(
-                page_id=page_id,
-                original_text=req.text,
-                simplified=simplified_map,
-                quiz=existing.get("quiz", {}),
-                flashcards=existing.get("flashcards", []),
-                subject=final_subject,
-                class_level=class_level,
-                detected_class_level=detected_class,
-                topic=saved_topic,
-                user_id=user_id_str
-            )
-        else:
-            await save_cache(
-                page_id=page_id,
-                original_text=req.text,
-                simplified={req.language: text_box[0]},
-                quiz={},
-                flashcards=[],
-                subject=final_subject,
-                class_level=class_level,
-                detected_class_level=detected_class,
-                topic=final_topic,
-                user_id=user_id_str
-            )
-            
-    background_tasks.add_task(save_after_stream)
+                existing = await get_cached(page_id)
+                if existing:
+                    simplified_map = existing.get("simplifiedText", {})
+                    simplified_map[req.language] = text_box[0]
+                    saved_topic = final_topic or existing.get("topic")
+                    await save_cache(
+                        page_id=page_id,
+                        original_text=req.text,
+                        simplified=simplified_map,
+                        quiz=existing.get("quiz", {}),
+                        flashcards=existing.get("flashcards", []),
+                        subject=final_subject,
+                        class_level=class_level,
+                        detected_class_level=detected_class,
+                        topic=saved_topic,
+                        user_id=user_id_str
+                    )
+                else:
+                    await save_cache(
+                        page_id=page_id,
+                        original_text=req.text,
+                        simplified={req.language: text_box[0]},
+                        quiz={},
+                        flashcards=[],
+                        subject=final_subject,
+                        class_level=class_level,
+                        detected_class_level=detected_class,
+                        topic=final_topic,
+                        user_id=user_id_str
+                    )
+            except Exception as e:
+                print(f"[stream save_cache error] {e}")
+
     return StreamingResponse(event_generator(), media_type="text/plain")
 
 @simplify_router.post("/detect")
