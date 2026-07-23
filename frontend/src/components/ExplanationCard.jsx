@@ -9,6 +9,8 @@ const SUBJECT_COLORS = {
   history: { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.3)', text: '#fcd34d', label: '📜 History' },
   geography: { bg: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.3)', text: '#6ee7b7', label: '🗺️ Geography' },
   economics: { bg: 'rgba(139,92,246,0.15)', border: 'rgba(139,92,246,0.3)', text: '#c4b5fd', label: '📊 Economics' },
+  hindi: { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.3)', text: '#fcd34d', label: '📙 Hindi' },
+  sanskrit: { bg: 'rgba(234,179,8,0.15)', border: 'rgba(234,179,8,0.3)', text: '#fde047', label: '📜 Sanskrit' },
   english: { bg: 'rgba(236,72,153,0.15)', border: 'rgba(236,72,153,0.3)', text: '#f9a8d4', label: '📝 English' },
   default: { bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.2)', text: '#a5b4fc', label: '📚 General' },
 }
@@ -254,6 +256,8 @@ export default function ExplanationCard({ explanation, detected = {}, onAudio, o
   else if (['history', 'civics', 'political science', 'politics', 'social science', 'social studies'].includes(rawSubj)) subject = 'history'
   else if (['geography', 'earth science', 'disaster management'].includes(rawSubj)) subject = 'geography'
   else if (['economics', 'economy'].includes(rawSubj)) subject = 'economics'
+  else if (['hindi', 'hindi literature', 'hindi bhasha'].includes(rawSubj)) subject = 'hindi'
+  else if (['sanskrit'].includes(rawSubj)) subject = 'sanskrit'
   else if (['english', 'literature', 'english literature'].includes(rawSubj)) subject = 'english'
 
   const colors = SUBJECT_COLORS[subject] || SUBJECT_COLORS.default

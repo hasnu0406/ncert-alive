@@ -117,38 +117,41 @@ NCERT Content:
 
 def detect_subject(text: str, user_class: int | None = None) -> dict:
     """Auto-detect subject, topic, and class level from NCERT text."""
+    import json
+    import re
+
     user_class_hint = ""
     if user_class:
-        user_class_hint = f"\n- The student's current registered grade level is Class {user_class}. If the text fits this grade level or contains complex subject matter (such as nationalism, print culture, globalization, chemical equations, etc. which are advanced Class 9-10 topics), you MUST return {user_class} as the 'class_level'. Do NOT fall back to Class 6 unless the text explicitly states it is for Class 6."
+        user_class_hint = f"\n- The student's current registered grade level is Class {user_class}. If the text fits this grade level or contains complex subject matter, return {user_class} as the 'class_level'."
+
+    # Script & Keyword Heuristic for Hindi / Sanskrit Literature
+    has_devanagari = bool(re.search(r'[\u0900-\u097F]', text[:2000]))
+    hindi_keywords = ["मातृभूमि", "मल्हार", "वसन्त", "दूर्वा", "बाल रामकथा", "क्षितिज", "स्पर्श", "संचयन", "आरोह", "वितान", "कविता", "कहानी", "व्याकरण", "लेखक", "कवि", "अध्याय", "हिंदी"]
+    is_hindi_hint = has_devanagari and any(kw in text for kw in hindi_keywords)
 
     prompt = f"""
-You are an expert at identifying NCERT textbook content for Indian CBSE curriculum across all Indian languages (including English, Hindi, Tamil, Telugu, etc.).
+You are an expert at identifying NCERT textbook content for Indian CBSE curriculum across all Indian subjects and languages (including English, Hindi, Sanskrit, Science, Math, Social Science).
 
 Respond ONLY with a valid JSON object matching this exact structure:
 {{
-  "subject": "science" or "math" or "history" or "geography" or "economics" or "english" or "default",
+  "subject": "science" or "math" or "history" or "geography" or "economics" or "hindi" or "sanskrit" or "english" or "default",
   "topic": "The exact name of the specific CBSE/NCERT chapter",
-  "class_level": 8,
-  "confidence": 0.9
+  "class_level": 6,
+  "confidence": 0.95
 }}
 
 Rules for class_level, subject, and topic detection:
-- CRITICAL FOR TOPIC DETECTION: Do NOT extract generic unit headers, theme headers, or section dividers (such as "EVENTS AND PROCESSES", "UNIT I", "THEME 1", "SECTION 1"). Instead, always determine and return the actual, specific CBSE/NCERT Chapter Name (e.g., "The Rise of Nationalism in Europe", "Nationalism in India", "Resources and Development", "Chemical Reactions and Equations", etc.) that this text belongs to.
-- If the text is a subtopic or a random page from a chapter, map it to the parent Chapter Name from the CBSE curriculum.
-- CRITICAL: If the text explicitly states the class level anywhere (e.g., "कक्षा 8", "Class 8", "Class IX", etc.), you MUST extract and use that exact class level integer.
-- CRITICAL: Look for textbook names or subjects explicitly mentioned in headers/footers (e.g., "समाज का अध्ययन" means geography).
-- "Natural Resources" is geography for Class 8, but science for Class 9.
-- Use context clues to identify the correct class level (6 to 12).{user_class_hint}
-
-CRITICAL: Return ONLY valid JSON. Do not include markdown formatting or explanations. Keep the "topic" value in the exact original language of the text.
+- CRITICAL FOR HINDI LITERATURE: If the text is a Hindi poem/prose/chapter from NCERT Hindi textbooks (such as "Malhar" / "मल्हार", "Vasant" / "वसन्त", "Durva" / "दूर्वा", "Bal Ramkatha", "Kritika", "Kshitij", "Sparsh", "Sanchayan", "Aroh", "Vitan", "मातृभूमि", etc.), the "subject" MUST be "hindi".
+- CRITICAL FOR SANSKRIT LITERATURE: If the text is from NCERT Sanskrit textbooks (such as "Ruchira", "Shemushi", "Deepakam"), the "subject" MUST be "sanskrit".
+- CRITICAL FOR ENGLISH LITERATURE: If the text is an English poem/prose/chapter (such as Honeysuckle, A Pact with the Sun, Beehive, Moments, Flamingo, Vistas), the "subject" MUST be "english".
+- CRITICAL FOR TOPIC DETECTION: Return the actual, specific CBSE/NCERT Chapter Name (e.g. "मातृभूमि", "The Rise of Nationalism in Europe", "Components of Food", etc.). Keep the "topic" value in the exact original language/script of the text.
+- CRITICAL: If the text explicitly states the class level anywhere (e.g. "कक्षा 6", "Class 6", "Class VI", etc.), extract and use that exact class level integer.{user_class_hint}
 
 Text to analyze:
 \"\"\"{text[:4000]}\"\"\"
 """
-    import json
-    
-    raw = ask_ai_json(prompt, fast_mode=False)
     try:
+        raw = ask_ai_json(prompt, fast_mode=False)
         raw_clean = raw.strip()
         if raw_clean.startswith("```json"):
             raw_clean = raw_clean[7:]
@@ -159,10 +162,10 @@ Text to analyze:
         raw_clean = raw_clean.strip()
         
         result = json.loads(raw_clean)
-        detected = int(result.get('class_level', 10))
+        detected = int(result.get('class_level', user_class or 10))
         detected = max(6, min(12, detected))
         
-        # Normalize subject string to match one of the 7 supported frontend categories
+        # Normalize subject string
         subj = result.get('subject', 'default').strip().lower()
         if subj in ['science', 'physics', 'chemistry', 'biology']:
             result['subject'] = 'science'
@@ -174,15 +177,24 @@ Text to analyze:
             result['subject'] = 'geography'
         elif subj in ['economics', 'economy']:
             result['subject'] = 'economics'
+        elif subj in ['hindi', 'hindi literature', 'hindi bhasha']:
+            result['subject'] = 'hindi'
+        elif subj in ['sanskrit']:
+            result['subject'] = 'sanskrit'
         elif subj in ['english', 'literature', 'english literature']:
             result['subject'] = 'english'
         else:
-            result['subject'] = 'default'
+            if is_hindi_hint:
+                result['subject'] = 'hindi'
+            else:
+                result['subject'] = 'default'
 
-        # Trust the AI's syllabus-matching capability for class level detection
+        if is_hindi_hint and result['subject'] == 'english':
+            result['subject'] = 'hindi'
+
         result['class_level'] = detected
         return result
     except Exception as e:
-        print(f"[detect_subject ERROR] {e} | RAW OUTPUT: {raw}")
-        # Fallback if AI completely fails
-        return {"subject": "default", "topic": "Unknown", "class_level": 10, "confidence": 0.5}
+        print(f"[detect_subject ERROR] {e}")
+        fallback_subj = "hindi" if is_hindi_hint else "default"
+        return {"subject": fallback_subj, "topic": "Unknown", "class_level": user_class or 6, "confidence": 0.5}
