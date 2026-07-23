@@ -754,7 +754,15 @@ async def generate(req: QuizRequest, current_user=Depends(get_current_user)):
         cached = await get_cached(req.doc_id)
         if cached and cached.get("quiz") and isinstance(cached["quiz"], dict) and cached["quiz"].get(req.language) and cached["quiz"][req.language].get("mcq"):
             return {"quiz": cached["quiz"][req.language], "from_cache": True, "page_id": req.doc_id}
-        else:
+        elif cached and cached.get("originalText"):
+            quiz = await asyncio.to_thread(generate_quiz, cached["originalText"], req.class_level, req.language, True)
+            quiz_map = cached.get("quiz", {})
+            if not isinstance(quiz_map, dict) or "mcq" in quiz_map:
+                quiz_map = {}
+            quiz_map[req.language] = quiz
+            await save_cache(req.doc_id, cached["originalText"], cached.get("simplifiedText", {}), quiz_map, cached.get("flashcards", {}), cached.get("subject", "default"), cached.get("classLevel", req.class_level), cached.get("detectedClassLevel"))
+            return {"quiz": quiz, "from_cache": False, "page_id": req.doc_id}
+        elif not req.text:
             return {"status": "processing"}
 
     page_id = req.page_id or hashlib.md5(req.text[:200].encode()).hexdigest()
@@ -819,7 +827,15 @@ async def generate_fc(req: FlashcardRequest, current_user=Depends(get_current_us
         cached = await get_cached(req.doc_id)
         if cached and cached.get("flashcards") and isinstance(cached["flashcards"], dict) and cached["flashcards"].get(req.language):
             return {"flashcards": cached["flashcards"][req.language], "from_cache": True, "page_id": req.doc_id}
-        else:
+        elif cached and cached.get("originalText"):
+            cards = await asyncio.to_thread(generate_flashcards, cached["originalText"], req.class_level, req.language, True)
+            cards_map = cached.get("flashcards", {})
+            if not isinstance(cards_map, dict):
+                cards_map = {}
+            cards_map[req.language] = cards
+            await save_cache(req.doc_id, cached["originalText"], cached.get("simplifiedText", {}), cached.get("quiz", {}), cards_map, cached.get("subject", "default"), cached.get("classLevel", req.class_level), cached.get("detectedClassLevel"))
+            return {"flashcards": cards, "from_cache": False, "page_id": req.doc_id}
+        elif not req.text:
             return {"status": "processing"}
 
     page_id = req.page_id or hashlib.md5(req.text[:200].encode()).hexdigest()
