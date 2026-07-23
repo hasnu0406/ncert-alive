@@ -13,9 +13,9 @@ _client = OpenAI(
     max_retries=1
 )
 
-PRIMARY_MODEL = "llama-3.3-70b-versatile"
+PRIMARY_MODEL = "llama-3.1-8b-instant"
 FAST_MODEL = "llama-3.1-8b-instant"  # For quiz/flashcard JSON — 5x faster
-FALLBACK_MODEL = "llama-3.3-70b-versatile"
+FALLBACK_MODEL = "llama-3.1-8b-instant"
 
 _API_KEY_ERROR_MSG = (
     "Invalid or missing GROQ_API_KEY. "
