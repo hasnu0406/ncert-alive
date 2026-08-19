@@ -31,7 +31,7 @@ def extract_en_dict(filepath):
 
 def ask_ai_json_custom(prompt):
     response = _client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="qwen/qwen3.6-27b",
         messages=[
             {"role": "system", "content": "You are a professional software localizer. Respond ONLY with valid JSON. Do not include markdown code blocks. The output MUST start with { and end with }."},
             {"role": "user", "content": prompt},

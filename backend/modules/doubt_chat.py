@@ -26,7 +26,7 @@ def generate_chat_title(question: str) -> str:
     prompt = f"Generate a short, concise title (max 4 words) for a chat conversation that starts with this question. Do not include quotes or punctuation:\n\n{question}"
     try:
         response = client.chat.completions.create(
-            model="meta-llama/llama-3.1-8b-instant",
+            model="qwen/qwen3.6-27b",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.7,
             max_tokens=20,
@@ -127,7 +127,7 @@ async def chat(session_id: str, question: str, context: str = "", language: str 
         api_key=os.getenv("OPENROUTER_API_KEY", "")
     )
     response = client.chat.completions.create(
-        model="meta-llama/llama-3.3-70b-instruct",
+        model="qwen/qwen3.6-27b",
         messages=messages,
         temperature=0.7,
         max_tokens=800,

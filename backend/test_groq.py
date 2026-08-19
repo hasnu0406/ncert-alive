@@ -1,5 +1,8 @@
 import os
+# pyrefly: ignore [missing-import]
 from openai import OpenAI
+
+# pyrefly: ignore [missing-import]
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,7 +13,7 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="meta-llama/llama-4-scout-17b-16e-instruct",
+    model="qwen/qwen3.6-27b",
     messages=[
         {"role": "system", "content": "You are a helpful AI assistant."},
         {"role": "user", "content": "Explain natural resources in a single short paragraph."}

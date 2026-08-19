@@ -2,7 +2,12 @@ import os
 import re
 import json
 import ast
+# pyrefly: ignore [missing-import]
+from dotenv import load_dotenv
+# pyrefly: ignore [missing-import]
 from openai import OpenAI
+
+load_dotenv('backend/.env')
 
 # Set up OpenRouter client
 client = OpenAI(
@@ -29,6 +34,7 @@ if not match:
 dict_str = match.group(1)
 
 # Hacky parser for the JS object to Python dict (requires replacing unquoted keys)
+# pyrefly: ignore [missing-import]
 import pyjsparser
 parsed = pyjsparser.parse(f"var x = {dict_str}")
 properties = parsed['body'][0]['declarations'][0]['init']['properties']
@@ -76,7 +82,7 @@ Return ONLY valid JSON format, with the exact same keys. No markdown blocks or e
 """
     try:
         response = client.chat.completions.create(
-            model="meta-llama/llama-3.3-70b-instruct",
+            model="qwen/qwen3.6-27b",
             messages=[
                 {"role": "system", "content": "You are an expert translator. Translate the JSON values. Keep the JSON keys exactly the same. Only return valid JSON."},
                 {"role": "user", "content": prompt}

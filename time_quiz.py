@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv('backend/.env')
 c = OpenAI(base_url='https://api.groq.com/openai/v1', api_key=os.getenv('GROQ_API_KEY'))
 
-FAST_MODEL = 'llama-3.1-8b-instant'
+FAST_MODEL = 'qwen/qwen3.6-27b'
 QUIZ_SYSTEM = "You are an expert CBSE exam question setter. Generate quiz questions in valid JSON only. No markdown fences, no extra text — pure JSON object."
 
 prompt = """Generate a quiz for Class 10 CBSE students based on the text below.
